@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: healthquest-db
+    environment:
+      POSTGRES_USER: healthquest
+      POSTGRES_PASSWORD: dev_password_123
+      POSTGRES_DB: healthquest_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U healthquest"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: healthquest-redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: healthquest-api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5000
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=healthquest_db;Username=healthquest;Password=dev_password_123
+      - ConnectionStrings__Redis=redis:6379
+      - JwtSettings__Secret=your-super-secret-jwt-key-change-this-in-production-minimum-32-characters
+      - JwtSettings__Issuer=HealthQuest
+      - JwtSettings__Audience=HealthQuestUsers
+      - JwtSettings__ExpiryMinutes=60
+    ports:
+      - "5000:5000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app/backend
+
+volumes:
+  postgres_data:

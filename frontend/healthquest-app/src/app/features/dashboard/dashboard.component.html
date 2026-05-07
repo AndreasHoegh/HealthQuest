@@ -1,0 +1,154 @@
+<div class="dashboard-container">
+  <!-- Header -->
+  <div class="dashboard-header">
+    <div class="header-content">
+      <div class="logo">
+        <h1>🏆 HealthQuest</h1>
+      </div>
+      <div class="user-actions">
+        <span class="user-email">{{ authService.currentUser()?.email }}</span>
+        <button class="btn btn-secondary" (click)="logout()">Logout</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- Welcome Banner -->
+    <div class="welcome-banner card">
+      <div class="welcome-content">
+        <h2>Welcome back, {{ patientData.name }}! 👋</h2>
+        <p>Keep up the great work on your health journey!</p>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-icon">⭐</div>
+          <div class="stat-content">
+            <div class="stat-value">Level {{ patientData.level }}</div>
+            <div class="stat-label">Current Level</div>
+          </div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-icon">🏆</div>
+          <div class="stat-content">
+            <div class="stat-value">{{ patientData.totalPoints }}</div>
+            <div class="stat-label">Total Points</div>
+          </div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-icon">🔥</div>
+          <div class="stat-content">
+            <div class="stat-value">{{ patientData.currentStreak }} days</div>
+            <div class="stat-label">Current Streak</div>
+          </div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-icon">📊</div>
+          <div class="stat-content">
+            <div class="stat-value">{{ patientData.complianceRate }}%</div>
+            <div class="stat-label">Compliance</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Today's Progress -->
+    <div class="card">
+      <h3 class="section-title">Today's Progress</h3>
+      <div class="progress-summary">
+        <div class="progress-item">
+          <span class="progress-label">Quests Completed:</span>
+          <span class="progress-value">{{ getCompletedCount() }} / {{ quests().length }}</span>
+        </div>
+        <div class="progress-item">
+          <span class="progress-label">Points Earned:</span>
+          <span class="progress-value">{{ getEarnedPoints() }} / {{ getTotalPoints() }}</span>
+        </div>
+      </div>
+      <div class="progress-bar-container">
+        <div 
+          class="progress-bar-fill" 
+          [style.width.%]="quests().length > 0 ? (getCompletedCount() / quests().length * 100) : 0"
+        ></div>
+      </div>
+    </div>
+
+    <!-- Daily Quests -->
+    <div class="card">
+      <div class="quests-header">
+        <h3 class="section-title">Today's Quests</h3>
+        <button 
+          class="btn btn-secondary btn-sm" 
+          (click)="generateQuests()"
+          [disabled]="loading()"
+        >
+          🔄 Refresh
+        </button>
+      </div>
+
+      <!-- Loading State -->
+      <div *ngIf="loading()" class="loading">
+        <div class="spinner"></div>
+        <p>Loading your quests...</p>
+      </div>
+
+      <!-- Error State -->
+      <div *ngIf="error()" class="error-message">
+        {{ error() }}
+        <button class="btn btn-primary mt-2" (click)="loadQuests()">
+          Try Again
+        </button>
+      </div>
+
+      <!-- Quests List -->
+      <div *ngIf="!loading() && !error()" class="quests-list">
+        <div 
+          *ngFor="let quest of quests()" 
+          class="quest-item"
+          [class.completed]="quest.isCompleted"
+        >
+          <div class="quest-icon">{{ getQuestIcon(quest) }}</div>
+          
+          <div class="quest-content">
+            <h4 class="quest-title">{{ quest.title }}</h4>
+            <p class="quest-description">{{ quest.description }}</p>
+            <div class="quest-meta">
+              <span class="quest-points badge badge-info">+{{ quest.points }} points</span>
+              <span *ngIf="quest.isCompleted" class="badge badge-success">✓ Completed</span>
+            </div>
+          </div>
+
+          <div class="quest-action">
+            <button 
+              *ngIf="!quest.isCompleted"
+              class="btn btn-success"
+              (click)="completeQuest(quest)"
+              [disabled]="completingQuestId() === quest.id"
+            >
+              <span *ngIf="completingQuestId() !== quest.id">Complete</span>
+              <span *ngIf="completingQuestId() === quest.id">...</span>
+            </button>
+            <div *ngIf="quest.isCompleted" class="completed-checkmark">
+              ✓
+            </div>
+          </div>
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="quests().length === 0" class="empty-state">
+          <div class="empty-icon">📋</div>
+          <h4>No quests for today</h4>
+          <p>Click "Refresh" to generate your daily quests!</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Motivational Section -->
+    <div class="card motivation-card">
+      <h3>💪 Keep Going!</h3>
+      <p class="motivation-text">
+        You're doing great! Every quest you complete brings you closer to your health goals.
+        Keep up the amazing work!
+      </p>
+    </div>
+  </div>
+</div>

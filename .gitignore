@@ -1,0 +1,12 @@
+node_modules/
+**/node_modules/
+bin/
+obj/
+**/bin/
+**/obj/
+dist/
+**/dist/
+.angular/
+**/.angular/
+.vs/
+.vscode/

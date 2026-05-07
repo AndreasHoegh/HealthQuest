@@ -1,0 +1,62 @@
+<div class="login-container">
+  <div class="login-card card">
+    <div class="logo-section text-center mb-4">
+      <h1 class="app-title">🏆 HealthQuest</h1>
+      <p class="app-subtitle">Gamified Patient Wellness</p>
+    </div>
+
+    <h2 class="text-center mb-3">Welcome Back!</h2>
+
+    <form (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input 
+          type="email" 
+          id="email" 
+          [(ngModel)]="email" 
+          name="email"
+          placeholder="test@healthquest.dk"
+          required
+          [disabled]="loading"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input 
+          type="password" 
+          id="password" 
+          [(ngModel)]="password" 
+          name="password"
+          placeholder="••••••••"
+          required
+          [disabled]="loading"
+        />
+      </div>
+
+      <div class="error" *ngIf="error">
+        {{ error }}
+      </div>
+
+      <button 
+        type="submit" 
+        class="btn btn-primary" 
+        [disabled]="loading"
+      >
+        <span *ngIf="!loading">Login</span>
+        <span *ngIf="loading">Logging in...</span>
+      </button>
+    </form>
+
+    <div class="register-link text-center mt-3">
+      <p>Don't have an account? <a routerLink="/register">Register here</a></p>
+    </div>
+
+    <div class="demo-credentials mt-3">
+      <p class="text-center" style="font-size: 14px; color: #6b7280;">
+        <strong>Demo Account:</strong><br>
+        test&#64;healthquest.dk / Test123!
+      </p>
+    </div>
+  </div>
+</div>

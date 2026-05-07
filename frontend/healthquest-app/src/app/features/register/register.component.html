@@ -1,0 +1,85 @@
+<div class="register-container">
+  <div class="register-card card">
+    <div class="logo-section text-center mb-4">
+      <h1 class="app-title">🏆 HealthQuest</h1>
+      <p class="app-subtitle">Gamified Patient Wellness</p>
+    </div>
+
+    <h2 class="text-center mb-3">Create Account</h2>
+
+    <form (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="name">Full Name *</label>
+        <input 
+          type="text" 
+          id="name" 
+          [(ngModel)]="name" 
+          name="name"
+          placeholder="John Doe"
+          required
+          [disabled]="loading"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email *</label>
+        <input 
+          type="email" 
+          id="email" 
+          [(ngModel)]="email" 
+          name="email"
+          placeholder="john@example.com"
+          required
+          [disabled]="loading"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password * (min 6 characters)</label>
+        <input 
+          type="password" 
+          id="password" 
+          [(ngModel)]="password" 
+          name="password"
+          placeholder="••••••••"
+          required
+          [disabled]="loading"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="condition">Health Condition</label>
+        <select 
+          id="condition" 
+          [(ngModel)]="condition" 
+          name="condition"
+          [disabled]="loading"
+        >
+          <option value="General">General</option>
+          <option value="Diabetes">Diabetes</option>
+          <option value="Heart Disease">Heart Disease</option>
+          <option value="COPD">COPD</option>
+          <option value="Hypertension">Hypertension</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+
+      <div class="error" *ngIf="error">
+        {{ error }}
+      </div>
+
+      <button 
+        type="submit" 
+        class="btn btn-primary" 
+        [disabled]="loading"
+      >
+        <span *ngIf="!loading">Create Account</span>
+        <span *ngIf="loading">Creating account...</span>
+      </button>
+    </form>
+
+    <div class="login-link text-center mt-3">
+      <p>Already have an account? <a routerLink="/login">Login here</a></p>
+    </div>
+  </div>
+</div>
